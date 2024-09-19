@@ -19,6 +19,7 @@ public class AirplaneAerodynamics : MonoBehaviour
     public float pitchSpeed = 1000f;
     public float rollSpeed = 1000f;
     public float yawSpeed = 1000f;
+    public float lerpSpeed = 0.03f;
 
     private BaseAirplaneInputs airplaneInputs;
 
@@ -57,6 +58,7 @@ public class AirplaneAerodynamics : MonoBehaviour
             HandlePitch();
             HandleRoll();
             HandleYaw();
+            HandleBanking();
 
             HandleRigibodyTransform();
         }
@@ -114,18 +116,24 @@ public class AirplaneAerodynamics : MonoBehaviour
         if (rb.velocity.magnitude > 1f)
         {
             // Calculate the corrective force instead of overwriting velocity
-            Vector3 forwardVelocity = Vector3.Project(rb.velocity, transform.forward);
-            Vector3 correctiveForce = (forwardVelocity - rb.velocity) * 0.5f; // Adjust this factor to control the strength
+            //Vector3 forwardVelocity = Vector3.Project(rb.velocity, transform.forward);
+            //Vector3 correctiveForce = (forwardVelocity - rb.velocity) * 0.5f; // Adjust this factor to control the strength
 
             // Apply the corrective force gradually
-            rb.AddForce(correctiveForce, ForceMode.Acceleration);
+            //rb.AddForce(correctiveForce, ForceMode.Acceleration);
+
+            Vector3 updatedVelocity = Vector3.Lerp(rb.velocity, transform.forward * forwardSpeed, forwardSpeed * angleOfAttack * Time.deltaTime * lerpSpeed);
+            rb.velocity = updatedVelocity;
+
+            Quaternion updatedRotation = Quaternion.Slerp(rb.rotation, Quaternion.LookRotation(rb.velocity, transform.up), Time.deltaTime * lerpSpeed);
+            rb.MoveRotation(updatedRotation);
         }
     }
 
     void HandlePitch()
     {
         Vector3 flatForward = transform.forward;
-        flatForward.y = 0f;
+        flatForward.y = 0;
         flatForward = flatForward.normalized;
 
         pitchAngle = Vector3.Angle(transform.forward, flatForward);
@@ -141,10 +149,10 @@ public class AirplaneAerodynamics : MonoBehaviour
     void HandleRoll()
     {
         Vector3 flatRight = transform.right;
-        flatRight.y = 0f;
+        flatRight.y = 0;
         flatRight = flatRight.normalized;
 
-        rollAngle = Vector3.Angle(transform.right, flatRight);
+        rollAngle = Vector3.SignedAngle(transform.right, flatRight, transform.forward);
 
         Vector3 rollTorque = -airplaneInputs.Roll * rollSpeed * transform.forward;
 
@@ -156,5 +164,14 @@ public class AirplaneAerodynamics : MonoBehaviour
         Vector3 yawTorque = airplaneInputs.Yaw * yawSpeed * transform.up;
 
         rb.AddTorque(yawTorque);
+    }
+
+    void HandleBanking()
+    {
+        //Get a value between 0 and 1 based on how much we are rolling to the left and right 
+        float bankSide = Mathf.InverseLerp(-90, 90, rollAngle);
+        float bankAmount = Mathf.Lerp(-1,1, bankSide); 
+        Vector3 bankTorque = bankAmount * rollSpeed * transform.up;
+        rb.AddTorque(bankTorque);
     }
 }

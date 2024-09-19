@@ -466,7 +466,7 @@ Transform:
   m_GameObject: {fileID: 728031434}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.59, z: 0.68}
+  m_LocalPosition: {x: 0, y: -0.59, z: 0.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1318,7 +1318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputActions: {fileID: -944628639613478452, guid: 0b80a5ea80214ec4a87e88dc46b550c9, type: 3}
-  throttleSpeed: 0.8
+  throttleSpeed: 0.5
   yawSpeed: 50
   maxFlapsIncrement: 3
 --- !u!4 &1968944432164263839 stripped
@@ -1358,8 +1358,8 @@ Rigidbody:
   m_GameObject: {fileID: 1968944432164263835}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0.01
-  m_AngularDrag: 0.5
+  m_Drag: 0.07
+  m_AngularDrag: 0.025
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -1425,10 +1425,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  pitchSpeed: 4000
-  rollSpeed: 8000
-  yawSpeed: 3000
-  dragFactor: 0.01
+  pitchSpeed: 1500
+  rollSpeed: 1550
+  yawSpeed: 1500
+  lerpSpeed: 0.03
+  dragFactor: 0.0004
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
