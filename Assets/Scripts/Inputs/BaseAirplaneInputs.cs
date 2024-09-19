@@ -23,10 +23,6 @@ public class BaseAirplaneInputs : MonoBehaviour
 
     private float stickyThrottle;
 
-    public float StickyThrottle
-    {
-        get { return stickyThrottle;}
-    }
 
     public float yawSpeed = 50f;
     protected float pitch = 0f;
@@ -102,6 +98,10 @@ public class BaseAirplaneInputs : MonoBehaviour
     public float Break
     {
         get { return breaks; }
+    }
+    public float StickyThrottle
+    {
+        get { return stickyThrottle;}
     }
     #endregion
 

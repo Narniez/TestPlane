@@ -65,7 +65,7 @@ public class AirplaneAerodynamics : MonoBehaviour
     void CalculateForwardSpeed()
     {
         Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
-        forwardSpeed = Mathf.Max(0,localVelocity.z);
+        forwardSpeed = Mathf.Max(0, localVelocity.z);
         forwardSpeed = Mathf.Clamp(forwardSpeed, 0, maxKph);
 
         kph = forwardSpeed * mpsToKph;
@@ -111,11 +111,14 @@ public class AirplaneAerodynamics : MonoBehaviour
     void HandleRigibodyTransform()
     {
         //Check if we are in motion 
-        if(rb.velocity.magnitude > 1f)
+        if (rb.velocity.magnitude > 1f)
         {
-            //Lerp to engine direction
-            Vector3 updatedVelocity = Vector3.Lerp(rb.velocity, transform.forward * forwardSpeed, forwardSpeed * angleOfAttack * Time.deltaTime);
-            rb.velocity = updatedVelocity;
+            // Calculate the corrective force instead of overwriting velocity
+            Vector3 forwardVelocity = Vector3.Project(rb.velocity, transform.forward);
+            Vector3 correctiveForce = (forwardVelocity - rb.velocity) * 0.5f; // Adjust this factor to control the strength
+
+            // Apply the corrective force gradually
+            rb.AddForce(correctiveForce, ForceMode.Acceleration);
         }
     }
 
@@ -152,6 +155,6 @@ public class AirplaneAerodynamics : MonoBehaviour
     {
         Vector3 yawTorque = airplaneInputs.Yaw * yawSpeed * transform.up;
 
-        rb.AddTorque(yawTorque);    
+        rb.AddTorque(yawTorque);
     }
 }
