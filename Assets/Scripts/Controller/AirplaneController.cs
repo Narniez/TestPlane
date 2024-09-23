@@ -30,6 +30,7 @@ public class AirplaneController : RigidBodyController
             }
 
             airplaneAerodynamics = GetComponent<AirplaneAerodynamics>();
+
             if (airplaneAerodynamics)
             {
                 airplaneAerodynamics.InitializeAerodynamics(rb, Input);
@@ -55,7 +56,6 @@ public class AirplaneController : RigidBodyController
         {
             HandleEngines();
             HandleAerodynamics();
-            HandleSteering();
             HandleBreaks();
             HandleAltitude();
         }
@@ -81,18 +81,17 @@ public class AirplaneController : RigidBodyController
         airplaneAerodynamics.UpdateAerodynamics();
     }
 
-    void HandleSteering()
-    {
-
-    }
 
     void HandleBreaks()
     {
+        if(Input.Break == 1)
+        {
 
+        }
     }
 
     void HandleAltitude()
     {
-
+        //TODO
     }
 }

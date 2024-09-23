@@ -51,8 +51,6 @@ public class BaseAirplaneInputs : MonoBehaviour
         breakAction = flightActionMap.FindAction("Break");
         flapsAction = flightActionMap.FindAction("Flaps");
 
-
-
         // Enable the actions
         pitchAction.Enable();
         rollAction.Enable();
@@ -117,11 +115,6 @@ public class BaseAirplaneInputs : MonoBehaviour
  
 
         HandleInput();
-    }
-
-    void ReadActionMap()
-    {
-
     }
 
 

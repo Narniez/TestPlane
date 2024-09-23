@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using TMPro;
 
 public class AirplaneAerodynamics : MonoBehaviour
 {
-    // Start is called before the first frame update
+
+    //FOR TESTING
+    public TextMeshProUGUI speedText;
+
+    //
+
     public float forwardSpeed;
     public float kph;
     public float maxKph = 178f;
@@ -73,6 +79,8 @@ public class AirplaneAerodynamics : MonoBehaviour
         kph = forwardSpeed * mpsToKph;
         kph = Mathf.Clamp(kph, 0, maxKph);
         normalizedKph = Mathf.InverseLerp(0, maxKph, kph);
+
+        speedText.text = "KPH: " + kph;
 
         //Debug.Log(normalizedKph);
 
