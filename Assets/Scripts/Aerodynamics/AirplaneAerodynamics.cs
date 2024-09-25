@@ -58,19 +58,19 @@ public class AirplaneAerodynamics : MonoBehaviour
     {
         if (rb)
         {
-            CalculateForwardSpeed();
-            CalculateLift();
-            CalculateDrag();
-            HandlePitch();
-            HandleRoll();
-            HandleYaw();
-            HandleBanking();
+            ForwardSpeed();
+            Lift();
+            Drag();
+            Pitch();
+            Roll();
+            Yaw();
+            Banking();
 
-            HandleRigibodyTransform();
+            RigibodyTransform();
         }
     }
 
-    void CalculateForwardSpeed()
+    void ForwardSpeed()
     {
         Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
         forwardSpeed = Mathf.Max(0, localVelocity.z);
@@ -87,29 +87,34 @@ public class AirplaneAerodynamics : MonoBehaviour
         //Debug.DrawRay(transform.position, transform.position + localVelocity, Color.green);
     }
 
-    void CalculateLift()
+    void Lift()
     {
-        //get the angle of attack
-        angleOfAttack = Vector3.Dot(rb.velocity.normalized, transform.forward);
+        if (kph > 10)
+        {
 
-        //Make it more of a curve instead of a linear value for a more realistic feel
-        angleOfAttack *= angleOfAttack;
+            //get the angle of attack
+            angleOfAttack = Vector3.Dot(rb.velocity.normalized, transform.forward);
+
+            //Make it more of a curve instead of a linear value for a more realistic feel
+            angleOfAttack *= angleOfAttack;
 
 
-        //Debug.Log("Angle of attack: " + angleOfAttack);
-        Vector3 liftDirection = transform.up;
+            //Debug.Log("Angle of attack: " + angleOfAttack);
+            Vector3 liftDirection = transform.up;
 
-        //Scalar value that we can use for the lift direction
-        float liftPower = liftCurve.Evaluate(normalizedKph) * maxLiftPower;
-        //Debug.Log(liftPower);
+            //Scalar value that we can use for the lift direction
+            float liftPower = liftCurve.Evaluate(normalizedKph) * maxLiftPower;
+            //Debug.Log(liftPower);
 
-        Vector3 finalLiftForce = liftDirection * liftPower * angleOfAttack;
+            Vector3 finalLiftForce = liftDirection * liftPower * angleOfAttack;
 
-        rb.AddForce(finalLiftForce);
+            rb.AddForce(finalLiftForce);
+        }
     }
 
-    void CalculateDrag()
+    void Drag()
     {
+
         float speedDrag = forwardSpeed * dragFactor;
         float finalDrag = startDrag + speedDrag;
 
@@ -118,17 +123,11 @@ public class AirplaneAerodynamics : MonoBehaviour
     }
 
     //Rotate the rigidbody towards the direction the engine is pulling it  
-    void HandleRigibodyTransform()
+    void RigibodyTransform()
     {
-        //Check if we are in motion 
+
         if (rb.velocity.magnitude > 1f)
         {
-            // Calculate the corrective force instead of overwriting velocity
-            //Vector3 forwardVelocity = Vector3.Project(rb.velocity, transform.forward);
-            //Vector3 correctiveForce = (forwardVelocity - rb.velocity) * 0.5f; // Adjust this factor to control the strength
-
-            // Apply the corrective force gradually
-            //rb.AddForce(correctiveForce, ForceMode.Acceleration);
 
             Vector3 updatedVelocity = Vector3.Lerp(rb.velocity, transform.forward * forwardSpeed, forwardSpeed * angleOfAttack * Time.deltaTime * lerpSpeed);
             rb.velocity = updatedVelocity;
@@ -136,9 +135,13 @@ public class AirplaneAerodynamics : MonoBehaviour
             Quaternion updatedRotation = Quaternion.Slerp(rb.rotation, Quaternion.LookRotation(rb.velocity, transform.up), Time.deltaTime * lerpSpeed);
             rb.MoveRotation(updatedRotation);
         }
+        else if (rb.velocity.magnitude < 0.1f) // If the speed is very small, stop the Rigidbody completely
+        {
+            rb.velocity = Vector3.zero;
+        }
     }
 
-    void HandlePitch()
+    void Pitch()
     {
         Vector3 flatForward = transform.forward;
         flatForward.y = 0;
@@ -154,7 +157,7 @@ public class AirplaneAerodynamics : MonoBehaviour
         rb.AddTorque(pitchTorque);
     }
 
-    void HandleRoll()
+    void Roll()
     {
         Vector3 flatRight = transform.right;
         flatRight.y = 0;
@@ -167,18 +170,18 @@ public class AirplaneAerodynamics : MonoBehaviour
         rb.AddTorque(rollTorque);
     }
 
-    void HandleYaw()
+    void Yaw()
     {
         Vector3 yawTorque = airplaneInputs.Yaw * yawSpeed * transform.up;
 
         rb.AddTorque(yawTorque);
     }
 
-    void HandleBanking()
+    void Banking()
     {
         //Get a value between 0 and 1 based on how much we are rolling to the left and right 
         float bankSide = Mathf.InverseLerp(-90, 90, rollAngle);
-        float bankAmount = Mathf.Lerp(-1,1, bankSide); 
+        float bankAmount = Mathf.Lerp(-1, 1, bankSide);
         Vector3 bankTorque = bankAmount * rollSpeed * transform.up;
         rb.AddTorque(bankTorque);
     }

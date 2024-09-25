@@ -56,7 +56,7 @@ public class AirplaneController : RigidBodyController
         {
             HandleEngines();
             HandleAerodynamics();
-            HandleBreaks();
+            HandleWheel();
             HandleAltitude();
         }
     }
@@ -69,7 +69,7 @@ public class AirplaneController : RigidBodyController
             {
                 foreach (AirplaneEngine engine in engines)
                 {
-                    rb.AddForce(engine.CalculateForce(Input.StickyThrottle));
+                    rb.AddForce(engine.CalculateForce(Input.Throttle));
 
                 }
             }
@@ -82,11 +82,16 @@ public class AirplaneController : RigidBodyController
     }
 
 
-    void HandleBreaks()
+    void HandleWheel()
     {
-        if(Input.Break == 1)
+        //bool canBreak = false;
+        //if(Input.Break == 1) canBreak = true;
+        if(wheels.Count > 0)
         {
-
+            foreach(AirplaneWheels wheel in wheels)
+            {
+                wheel.HandleWheel(Input);
+            }
         }
     }
 

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class BaseAirplaneInputs : MonoBehaviour
 {
-    public InputActionAsset inputActions; // Reference to the Input Action Asset
+    public InputActionAsset inputActions;
     #region Input Actions
 
     private InputAction pitchAction;
@@ -132,13 +132,11 @@ public class BaseAirplaneInputs : MonoBehaviour
         bool positiveFlapsPressed = flapsAction.controls[0].IsPressed();
         bool negativeFlapsPressed = flapsAction.controls[1].IsPressed();
 
-        // Increment the flaps if the positive button is pressed this frame and wasn't pressed last frame
         if (positiveFlapsPressed && !positiveFlapsPressedLastFrame)
         {
             flaps = Mathf.Clamp(flaps + 1, 0, maxFlapsIncrement);
         }
 
-        // Decrement the flaps if the negative button is pressed this frame and wasn't pressed last frame
         if (negativeFlapsPressed && !negativeFlapsPressedLastFrame)
         {
             flaps = Mathf.Clamp(flaps - 1, 0, maxFlapsIncrement);
