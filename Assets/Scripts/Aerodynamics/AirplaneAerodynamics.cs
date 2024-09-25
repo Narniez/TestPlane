@@ -135,7 +135,7 @@ public class AirplaneAerodynamics : MonoBehaviour
             Quaternion updatedRotation = Quaternion.Slerp(rb.rotation, Quaternion.LookRotation(rb.velocity, transform.up), Time.deltaTime * lerpSpeed);
             rb.MoveRotation(updatedRotation);
         }
-        else if (rb.velocity.magnitude < 0.1f) // If the speed is very small, stop the Rigidbody completely
+        else if (rb.velocity.magnitude < 0.1f)
         {
             rb.velocity = Vector3.zero;
         }

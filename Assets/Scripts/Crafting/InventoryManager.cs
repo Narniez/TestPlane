@@ -3,15 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class InventoryManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     GameObject draggedObject;
     GameObject lastItemSlot;
 
+    [SerializeField] GameObject inventoryUI;
+
+    [SerializeField]  InputActionAsset playerActions;
+    private InputAction openInventory;
+
+    bool isOpen = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        inventoryUI.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        openInventory = playerActions.FindAction("Inventory");
+
+        openInventory.performed += ToggleInventory;
+
+        openInventory.Enable();
+    }
+
+    private void OnDisable()
+    {
+        openInventory.Disable();
+
+        openInventory.performed -= ToggleInventory;
 
     }
 
@@ -22,7 +47,9 @@ public class InventoryManager : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         {
             draggedObject.transform.position = Input.mousePosition;
         }
+
     }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -59,5 +86,11 @@ public class InventoryManager : MonoBehaviour, IPointerDownHandler, IPointerUpHa
                 draggedObject = null;
             }
         }
+    }
+
+    private void ToggleInventory(InputAction.CallbackContext context)
+    {
+        isOpen = !isOpen;
+        inventoryUI.SetActive(isOpen);
     }
 }

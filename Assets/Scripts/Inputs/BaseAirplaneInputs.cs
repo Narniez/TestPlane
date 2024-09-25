@@ -25,14 +25,14 @@ public class BaseAirplaneInputs : MonoBehaviour
 
 
     public float yawSpeed = 50f;
-    protected float pitch = 0f;
-    protected float roll = 0f;
-    protected float yaw = 0f;
-    protected float throttle = 0f;
-    protected float breaks = 0f;
+    private float pitch = 0f;
+    private float roll = 0f;
+    private float yaw = 0f;
+    private float throttle = 0f;
+    private float breaks = 0f;
 
-    public int maxFlapsIncrement = 3;
-    protected int flaps = 0;
+    private int maxFlapsIncrement = 3;
+    private int flaps = 0;
 
     private bool positiveFlapsPressedLastFrame = false;
     private bool negativeFlapsPressedLastFrame = false;
